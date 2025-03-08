@@ -1,5 +1,5 @@
 """
-cogs.data.fish.py
+data.fish.py
 ---
 Author: Enitoxy
 Co-authors: [empty]

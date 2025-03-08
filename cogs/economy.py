@@ -12,7 +12,7 @@ import random
 from discord import Embed, Interaction, app_commands
 from discord.ext import commands
 
-from cogs.data.fish import fishes
+from data.fish import fishes
 
 
 class Economy(commands.Cog):
