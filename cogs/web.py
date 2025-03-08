@@ -1,5 +1,5 @@
 """
-cogs.apis.py
+cogs.web.py
 ---
 Author: Enitoxy
 Co-authors: [empty]
