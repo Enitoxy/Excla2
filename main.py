@@ -4,7 +4,6 @@ main.py
 Author: Enitoxy
 Co-authors: [empty]
 License: GPL-3.0
-Created: 2025-03-04
 Description: The main file, aka entry point
 """
 

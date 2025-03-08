@@ -4,7 +4,6 @@ cogs.economy.py
 Author: Enitoxy
 Co-authors: [empty]
 License: GPL-3.0
-Created: 2025-03-04
 Description: A cog/module containing economy commands (fishing)
 """
 

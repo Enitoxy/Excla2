@@ -4,7 +4,6 @@ cogs.data.fish.py
 Author: Enitoxy
 Co-authors: [empty]
 License: GPL-3.0
-Created: 2025-03-04
 Description: A data file that contains the fish that the economy uses
 """
 
