@@ -73,6 +73,44 @@ class Economy(commands.Cog):
 
         await interaction.response.send_message(embed=embed)
 
+    @app_commands.command(name="inventory")
+    async def inventory(self, interaction: Interaction):
+        await interaction.response.defer(thinking=True)
+        # This time, we'll use a filter because we only want to know about the items.
+        query = {"user_id": interaction.user.id}
+        _filter = {"_id": 0, "user_id": 0, "bits": 0}
+        user_inventory = await db.inventory.find_one(query, _filter)
+
+        if user_inventory is None:
+            embed = Embed(
+                title="You don't have anything in your inventory!",
+                description="Try catching something with `/fish`!",
+            )
+            await interaction.response.send_message(embed=embed)
+            return
+
+        embed = Embed(title="Your Inventory", description="")
+
+        inventory_value = 0
+        for item in user_inventory:
+            if user_inventory[item] == 0:
+                continue
+            fish_name = fishes[item]["name"]
+            fish_value = fishes[item]["value"]
+            fish_amount = user_inventory[item]
+            fish_emoji = await self.get_emoji(item)
+
+            inventory_value += fish_amount * fish_value
+
+            embed.add_field(
+                name=f"{fish_name} {fish_emoji} x {fish_amount}",
+                value=f"Single: {fish_value}, Total: {fish_amount*fish_value}",
+                inline=False,
+            )
+
+        embed.set_footer(text=f"Total inventory value: {inventory_value}")
+        await interaction.followup.send(embed=embed)
+
 
 async def setup(bot: commands.AutoShardedBot):
     await bot.add_cog(Economy(bot))
