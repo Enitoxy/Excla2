@@ -1,3 +1,12 @@
+"""
+utils.db.py
+---
+Author: Enitoxy
+Co-authors: [empty]
+License: GPL-3.0
+Description: A utility that connects to a MongoDB database
+"""
+
 import os
 from glob import glob
 
