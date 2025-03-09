@@ -66,7 +66,7 @@ class Economy(commands.Cog):
         fish_name = fishes[fish]["name"]
         fish_value = fishes[fish]["value"]
 
-        await self.add_one_fish(interaction, fish)
+        await self.add_one_fish(interaction.user.id, fish)
 
         emoji = await self.get_emoji(fish)
 
