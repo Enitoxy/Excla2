@@ -60,6 +60,10 @@ class Economy(commands.Cog):
         data = {"$inc": {fish: 1}}
         return await db.inventory.update_one(query, data)
 
+    async def sell_amount(self, user_id: int, item: str, amount: int): ...
+
+    async def sell_all(self, user_id: int, item: str): ...
+
     @app_commands.command(name="fish")
     async def fish(self, interaction: Interaction):
         fish = await self.get_fish()
