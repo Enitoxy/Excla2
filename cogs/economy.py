@@ -71,7 +71,7 @@ class Economy(commands.Cog):
         embed.add_field(name=emoji, value="")
         embed.add_field(name=f"Value: {fish_value}", value="", inline=False)
 
-        await interaction.response.send_message(embed=embed)
+        return await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="inventory")
     async def inventory(self, interaction: Interaction):
@@ -86,8 +86,7 @@ class Economy(commands.Cog):
                 title="You don't have anything in your inventory!",
                 description="Try catching something with `/fish`!",
             )
-            await interaction.response.send_message(embed=embed)
-            return
+            return await interaction.followup.send(embed=embed)
 
         embed = Embed(title="Your Inventory", description="")
 
@@ -109,7 +108,7 @@ class Economy(commands.Cog):
             )
 
         embed.set_footer(text=f"Total inventory value: {inventory_value}")
-        await interaction.followup.send(embed=embed)
+        return await interaction.followup.send(embed=embed)
 
 
 async def setup(bot: commands.AutoShardedBot):
