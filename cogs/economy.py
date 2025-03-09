@@ -110,6 +110,25 @@ class Economy(commands.Cog):
         embed.set_footer(text=f"Total inventory value: {inventory_value}")
         return await interaction.followup.send(embed=embed)
 
+    @app_commands.command(name="balance")
+    async def balance(self, interaction: Interaction):
+        query = {"user_id": interaction.user.id}
+        _filter = {"_id": 0, "bits": 1}
+        user_inventory = await db.inventory.find_one(query, _filter)
+
+        if user_inventory is None:
+            embed = Embed(
+                title="You don't have a balance yet!",
+                description="Try selling some fish with `/sell`!",
+            )
+            return await interaction.response.send_message(embed=embed)
+
+        embed = Embed(
+            title="Your Balance",
+            description=f"{user_inventory["bits"]} bits",
+        )
+        return await interaction.response.send_message(embed=embed)
+
 
 async def setup(bot: commands.AutoShardedBot):
     await bot.add_cog(Economy(bot))
