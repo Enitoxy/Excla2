@@ -24,6 +24,7 @@ class Economy(commands.Cog):
     def __init__(self, bot: commands.AutoShardedBot):
         self.bot = bot
 
+    # Most of the commands without `@app_commands.command` are database-related functions
     async def get_fish(self):
         while True:
             random_fish = random.choice(list(fishes))
