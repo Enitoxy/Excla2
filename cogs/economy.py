@@ -50,12 +50,12 @@ class Economy(commands.Cog):
         }
         await db.inventory.insert_one(data)
 
-    async def add_one_fish(self, interaction: Interaction, fish: str):
-        query = {"user_id": interaction.user.id}
+    async def add_one_fish(self, user_id: int, fish: str):
+        query = {"user_id": user_id}
         user_inventory = await db.inventory.find_one(query)
 
         if user_inventory is None:
-            await self.new_inventory(interaction.user.id)
+            await self.new_inventory(user_id)
 
         data = {"$inc": {fish: 1}}
         await db.inventory.update_one(query, data)
