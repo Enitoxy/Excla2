@@ -48,7 +48,7 @@ class Economy(commands.Cog):
             "user_id": user_id,
             "bits": 0,
         }
-        await db.inventory.insert_one(data)
+        return await db.inventory.insert_one(data)
 
     async def add_one_fish(self, user_id: int, fish: str):
         query = {"user_id": user_id}
@@ -58,7 +58,7 @@ class Economy(commands.Cog):
             await self.new_inventory(user_id)
 
         data = {"$inc": {fish: 1}}
-        await db.inventory.update_one(query, data)
+        return await db.inventory.update_one(query, data)
 
     @app_commands.command(name="fish")
     async def fish(self, interaction: Interaction):
