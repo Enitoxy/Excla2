@@ -103,8 +103,8 @@ class Economy(commands.Cog):
             inventory_value += fish_amount * fish_value
 
             embed.add_field(
-                name=f"{fish_name} {fish_emoji} x {fish_amount}",
-                value=f"Single: {fish_value}, Total: {fish_amount*fish_value}",
+                name=f"{fish_amount} {fish_name} {fish_emoji} x {fish_value}",
+                value=f"Total: {fish_amount*fish_value}",
                 inline=False,
             )
 
