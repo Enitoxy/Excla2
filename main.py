@@ -16,6 +16,8 @@ import discord
 from colorama import Fore
 from discord.ext import commands, tasks
 
+from app import server
+
 TOKEN = os.environ["TOKEN"]
 INTENTS = discord.Intents.all()
 COMMAND_PREFIX = "/"
@@ -91,7 +93,9 @@ class Bot(commands.AutoShardedBot):
 async def main():
     bot = Bot()
     async with bot:
-        await bot.start(TOKEN)
+        bot_task = asyncio.create_task(bot.start(TOKEN))
+        app_task = asyncio.create_task(server.serve())
+        await asyncio.gather(bot_task, app_task)
 
 
 if __name__ == "__main__":
