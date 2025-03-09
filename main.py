@@ -8,28 +8,54 @@ Description: The main file, aka entry point
 """
 
 import asyncio
+import logging
 import os
 import random
 
 import discord
+from colorama import Fore
 from discord.ext import commands, tasks
 
 TOKEN = os.environ["TOKEN"]
 INTENTS = discord.Intents.all()
 COMMAND_PREFIX = "/"
 
+formatter = logging.Formatter(
+    "{0}[%(asctime)s] {1}[%(levelname)s] {2}%(name)s {3}- %(message)s".format(
+        Fore.GREEN,
+        Fore.BLUE,
+        Fore.MAGENTA,
+        Fore.RESET,
+    ),
+    "%d-%m-%Y %H:%M:%S",
+)
+
+handler = logging.StreamHandler()
+handler.setLevel(logging.INFO)
+handler.setFormatter(formatter)
+
+root = logging.getLogger()
+root.setLevel(logging.INFO)
+root.addHandler(handler)
+
 
 class Bot(commands.AutoShardedBot):
     def __init__(self):
         super().__init__(command_prefix=COMMAND_PREFIX, intents=INTENTS)
+        self.log = logging.getLogger("main")
 
-    async def on_ready(self): ...
+    async def on_ready(self):
+        self.log.info("Excla! is online!")
+        self.log.info(f"Latency: {round(self.latency, 4)}ms")
+        self.log.info(f"Discord.py: {discord.__version__}")
+        self.log.info(f"{len(self.guilds)} servers")
 
     async def load_cogs(self):
         """Loads cogs from a specific directory"""
         for cog_file in os.listdir("./cogs"):
             if cog_file.endswith(".py"):
                 await self.load_extension(f"cogs.{cog_file[:-3]}")
+                self.log.info(f"Loaded {cog_file}")
 
     @tasks.loop(minutes=2)
     async def status_task(self):
@@ -52,12 +78,14 @@ class Bot(commands.AutoShardedBot):
     async def start_tasks(self):
         """Starts the bot's tasks, each task set manually"""
         self.status_task.start()
+        self.log.info("Started tasks")
 
     # Set up and start tasks, load cogs, sync tree
     async def setup_hook(self):
         await self.start_tasks()
         await self.load_cogs()
         await self.tree.sync()
+        self.log.info("Synced tree")
 
 
 async def main():

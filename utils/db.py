@@ -7,12 +7,15 @@ License: GPL-3.0
 Description: A utility that connects to a MongoDB database
 """
 
+import logging
 import os
 from glob import glob
 
 from pymongo import AsyncMongoClient
 
 MONGODB = os.getenv("MONGODB")
+
+log = logging.getLogger(__name__)
 
 # Place a single X509 certificate at the root of the project, in certs/
 cert = glob("./certs/X509-cert*.pem")
@@ -25,6 +28,7 @@ client = AsyncMongoClient(
     tls=True,
     tlsCertificateKeyFile=cert[0],
 )
+log.info("Database client set up")
 
 # From the client, we get a database by its name
 db = client["excla2"]
