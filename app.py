@@ -22,4 +22,7 @@ server = uvicorn.Server(config)
 
 @app.get("/")
 async def root(request: Request):
-    return {"version": "1.0"}
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+    )
