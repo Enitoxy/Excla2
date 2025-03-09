@@ -7,13 +7,17 @@ License: GPL-3.0
 Description: A cog/module containing economy commands (fishing)
 """
 
+import logging
 import random
 
 from discord import Embed, Interaction, app_commands
+from discord.app_commands import Choice
 from discord.ext import commands
 
 from data.fish import fishes
 from utils import db
+
+log = logging.getLogger(__name__)
 
 
 class Economy(commands.Cog):
