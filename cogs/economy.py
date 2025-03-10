@@ -61,9 +61,77 @@ class Economy(commands.Cog):
         data = {"$inc": {fish: 1}}
         return await db.inventory.update_one(query, data)
 
-    async def sell_amount(self, user_id: int, item: str, amount: int): ...
+    async def sell_amount(self, user_id: int, item: str, amount: int):
+        query = {"user_id": user_id}
+        _filter = {item: 1}
+        user_inventory = await db.inventory.find_one(query, _filter)
 
-    async def sell_all(self, user_id: int, item: str): ...
+        if user_inventory[item] <= 0 or item not in user_inventory:
+            return {
+                "status": False,
+                "message": "Hmm... it seems like you don't have that item!",
+            }
+
+        if user_inventory[item] < amount:
+            return {
+                "status": False,
+                "message": "Hmm... it seems like you don't have enough of that item!",
+            }
+
+        if amount <= 0:
+            return {
+                "status": False,
+                "message": "You sold... nothing.",
+            }
+
+        item_value = fishes[item]["value"]
+        sale_value = item_value * amount
+        update = {
+            "$inc": {
+                "bits": sale_value,
+                item: -amount,
+            }
+        }
+        await db.inventory.update_one(query, update)
+        return {
+            "status": True,
+            "value": sale_value,
+            "amount": amount,
+        }
+
+    async def sell_all(self, user_id: int, item: str):
+        query = {"user_id": user_id}
+        _filter = {item: 1}
+        user_inventory = await db.inventory.find_one(query, _filter)
+
+        if item not in user_inventory:
+            return {
+                "status": False,
+                "message": "Hmm... it seems like you don't have that item!",
+            }
+
+        item_amount = user_inventory[item]
+
+        if item_amount <= 0:
+            return {
+                "status": False,
+                "message": "Hmm... it seems like you don't have that item!",
+            }
+
+        item_value = fishes[item]["value"]
+        sale_value = item_value * item_amount
+        update = {
+            "$inc": {
+                "bits": sale_value,
+                item: -item_amount,
+            }
+        }
+        await db.inventory.update_one(query, update)
+        return {
+            "status": True,
+            "value": sale_value,
+            "amount": item_amount,
+        }
 
     @app_commands.command(name="fish")
     async def fish(self, interaction: Interaction):
@@ -137,6 +205,78 @@ class Economy(commands.Cog):
             description=f"{user_inventory["bits"]} bits",
         )
         return await interaction.response.send_message(embed=embed)
+
+    @app_commands.command(name="sell")
+    async def sell(
+        self,
+        interaction: Interaction,
+        action: str,
+        item: str,
+        amount: int = 1,
+    ):
+        if item not in fishes:
+            return await interaction.response.send_message(
+                "Hmm... it seems like this item doesn't exist. Please try one of the shown options when running the command."
+            )
+
+        if action == "sell_all":
+            sale = await self.sell_all(interaction.user.id, item)
+        elif action == "sell_amount":
+            sale = await self.sell_amount(interaction.user.id, item, amount)
+        else:
+            return await interaction.response.send_message(
+                "Hmm... it seems like this action doesn't exist. Please try one of the shown options when running the command."
+            )
+
+        if not sale["status"]:
+            return await interaction.response.send_message(sale["message"])
+
+        item_name = fishes[item]["name"]
+        item_emoji = await self.get_emoji(item)
+        embed = Embed(title="Sold!", description="")
+        embed.add_field(
+            name=f"{sale["amount"]} x {item_emoji} {item_name}",
+            value=f"Sold for {sale["value"]} bits",
+            inline=False,
+        )
+
+        return await interaction.response.send_message(embed=embed)
+
+    @sell.autocomplete("action")
+    async def sell_autocomplete_action(
+        self,
+        interaction: Interaction,
+        current: str,
+    ):
+        choices = [
+            Choice(name="Sell everything", value="sell_all"),
+            Choice(name="Sell specific amount", value="sell_amount"),
+        ]
+        return choices
+
+    @sell.autocomplete("item")
+    async def sell_autocomplete_item(self, interaction: Interaction, current: str):
+        items = []
+        query = {"user_id": interaction.user.id}
+        _filter = {"_id": 0, "user_id": 0, "bits": 0}
+
+        if current:
+            for fish in fishes:
+                if fishes[fish]["name"].lower().startswith(current.lower()):
+                    _filter = {"_id": 0}
+                    _filter[fish] = 1
+
+        user_inventory = await db.inventory.find_one(query, _filter)
+
+        if user_inventory is None:
+            return []
+
+        for item in user_inventory:
+            if user_inventory[item] > 0:
+                item_name = fishes[item]["name"]
+                items.append(Choice(name=item_name, value=item))
+
+        return items
 
 
 async def setup(bot: commands.AutoShardedBot):
