@@ -33,5 +33,6 @@ log.info("Database client set up")
 # From the client, we get a database by its name
 db = client["excla2"]
 
-# Then we get a collection, in this case it's named inventory
+# And then we get any collection from the db
 inventory = db["inventory"]
+welcome_channels = db["welcome_channels"]
