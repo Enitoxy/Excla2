@@ -33,6 +33,7 @@ class Web(commands.Cog):
             description=response["alt"],
         )
         embed.set_image(url=response["img"])
+        embed.set_footer(text="By xkcd")
         await interaction.followup.send(embed=embed)
 
 
