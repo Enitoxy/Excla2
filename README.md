@@ -1,6 +1,28 @@
 # Excla!
 
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![GitHub License](https://img.shields.io/github/license/Enitoxy/Excla2)](https://github.com/Enitoxy/Excla2/blob/main/LICENSE)
+<div>
+  <p align="center">
+    <img src="https://enitoxy.com/static/img/excla-banner-transparent.png" width="800"> 
+  </p>
+  <p align="center">
+    An open-source Python Discord bot built with <a href="https://github.com/Rapptz/discord.py">discord.py</a>, paired with a FastAPI-powered website and dashboard.
+  </p>
+  <p align="center">
+    <a href="https://github.com/astral-sh/ruff">
+        <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json">
+    </a>
+    <a href="https://github.com/fastapi/fastapi">
+        <img src="https://img.shields.io/badge/FastAPI-005571?logo=fastapi">
+    </a>
+    <a href="https://github.com/Enitoxy/Excla2/blob/main/LICENSE">
+        <img src="https://img.shields.io/github/license/Enitoxy/Excla2">
+    </a>
+  </p>
+</div>
 
-An open-source Discord bot/app, built with discord.py!
+# Installation
+
+# Usage
+
+# Contribute
+
